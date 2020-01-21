@@ -50,10 +50,12 @@ public class TicTacToe{
         } 
         
         game = new TicTacToeGame(lines, columns,win);
-
-
-        // YOUR CODE HERE
-
+		for (int x = 0; x < lines*columns; x++) {
+			play(Integer.parseInt(args[x+3]));
+			if (game.getLevel != x) {
+				x--;
+			}
+		}
 
     }
 
