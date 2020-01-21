@@ -13,37 +13,36 @@ public class TicTacToeGame {
    /**
 	* The board of the game, stored as a one dimension array.
 	*/
-	board;
+	private CellValue[] board;
 
 
    /**
 	* level records the number of rounds that have been
 	* played so far. 
 	*/
-	level;
+	private int level;
 
    /**
-	* gameState records the current state of the game.
+	* gameState records the current state of the game
 	*/
-	gameState;
-
+	private GameState gameState = GameState.PLAYING;
 
    /**
 	* lines is the number of lines in the grid
 	*/
-	lines;
+	private int lines;
 
    /**
 	* columns is the number of columns in the grid
 	*/
-	columns;
+	private int columns;
 
 
    /**
 	* sizeWin is the number of cell of the same type
 	* that must be aligned to win the game
 	*/
-	sizeWin;
+	private int sizeWin;
 
 
    /**
@@ -51,9 +50,10 @@ public class TicTacToeGame {
 	* align 3 cells
 	*/
 	public TicTacToeGame(){
-
-		// YOUR CODE HERE 
-
+		lines = 3;
+		columns = 3;
+		sizeWin = 3;
+		boardInitialization();
 	}
 
    /**
@@ -66,9 +66,10 @@ public class TicTacToeGame {
     *  the number of columns in the game
   	*/
 	public TicTacToeGame(int lines, int columns){
-
-		// YOUR CODE HERE 
-
+		this.lines = lines;
+		this.columns = columns;
+		sizeWin = 3;
+		boardInitialization();
 	}
 
    /**
@@ -83,9 +84,10 @@ public class TicTacToeGame {
     *  the number of cells that must be aligned to win.
   	*/
 	public TicTacToeGame(int lines, int columns, int sizeWin){
-
-		// YOUR CODE HERE 
-
+		this.lines = lines;
+		this.columns = columns;
+		this.sizeWin = sizeWin;
+		boardInitialization();
 	}
 
 
@@ -96,9 +98,7 @@ public class TicTacToeGame {
 	* 	the value of lines
 	*/
 	public int getLines(){
-
-		// YOUR CODE HERE 
-
+		return lines;
 	}
 
    /**
@@ -107,9 +107,7 @@ public class TicTacToeGame {
 	* 	the value of columns
 	*/
 	public int getColumns(){
-
-		// YOUR CODE HERE 
-
+		return columns;
 	}
 
    /**
@@ -118,9 +116,7 @@ public class TicTacToeGame {
 	* 	the value of level
 	*/
 	public int getLevel(){
-
-		// YOUR CODE HERE 
-
+		return level;
 	}
 
   	/**
@@ -129,20 +125,15 @@ public class TicTacToeGame {
 	* 	the value of sizeWin
 	*/
 	public int getSizeWin(){
-
-		// YOUR CODE HERE 
-
+		return sizeWin;
 	}
-
    /**
 	* getter for the variable gameState
 	* @return
 	* 	the value of gameState
 	*/
 	public GameState getGameState(){
-
-		// YOUR CODE HERE 
-
+		return gameState;
 	}
 
    /**
@@ -156,9 +147,9 @@ public class TicTacToeGame {
     * to the next expected value.
   	*/
 	public CellValue nextCellValue(){
-
-		// YOUR CODE HERE 
-
+		if (level%2 == 0) 
+			return CellValue.X;
+		return CellValue.O;
 	}
 
    /**
@@ -172,9 +163,7 @@ public class TicTacToeGame {
     *  the value at index i in the variable board.
   	*/
 	public CellValue valueAt(int i) {
-
-		// YOUR CODE HERE 
-
+		return board[i];
 	}
 
    /**
@@ -196,11 +185,28 @@ public class TicTacToeGame {
     * selected by the next player
   	*/
 	public void play(int i) {
-
-
-		// YOUR CODE HERE 
-
-	
+		if (i<0 || i>=board.length) {
+			System.out.println("Invalid argument, try again");
+			return;
+		}
+		if (board[i] != CellValue.EMPTY) {
+			System.out.println("Cell is not empty, try again");
+			return;
+		}
+		board[i] = nextCellValue();
+		level++;
+		System.out.println(toString());
+		if (gameState == GameState.PLAYING) {
+			setGameState(i);
+			gameHelper();
+		}	
+		String player;
+		if (nextCellValue == CellValue.X) {
+			player = "X";
+		} else {
+			player = "O";
+		}	
+		System.out.println(player + " to play: ");
 	}
 
 
@@ -222,12 +228,63 @@ public class TicTacToeGame {
   	*/
 
 
-	private void setGameState(int i){
-
-		// YOUR CODE HERE 
-
+	private void gameHelper() {
+		if (gameState == GameState.DRAW) {
+			System.out.println("DRAW");
+		}
+		if (gameState == GameState.X_WINS) {
+			System.out.println("X WINS");
+		}
+		if (gameState == GameState.O_WINS) {
+			System.out.println("O WINS");
+		}
 	}
 
+	private void setGameState(int i){
+		if (winChecker(i)) {
+			if (board[i] == CellValue.X) {
+				gameState = GameState.X_WINS;
+				return;
+			}
+			gameState = GameState.O_WINS;
+			return;
+		}
+		if (level == board.length) {
+			gameState = GameState.DRAW;
+		}
+	}
+	
+	private boolean winChecker(int i) {
+		for (int x = lines-1; x< lines+2; x++) {
+			if ((1 + setGameStateHelper(i-x, -x) + setGameStateHelper(i+x, x)) >= sizeWin)
+				return true;
+		}
+		int currentLine = i-i%lines; 
+		int counter = 0;
+		for (int x = 0;  x < lines; x++) {
+			if (board[currentLine+x] == board[i]) {
+				counter ++;
+			}else{ 
+				counter = 0;
+			}
+			if (counter == sizeWin) 
+				return true;
+		}
+		return false;
+	}
+	
+	private int setGameStateHelper(int x, int increment) {
+		if (x < 0 || x >= board.length || board[x] == nextCellValue()) 
+			return 0;
+		return 1 + setGameStateHelper(x+increment, increment);
+	}
+	
+
+	private void boardInitialization() {
+		board = new CellValue[lines*columns];
+		for (int x  = 0; x < board.length; x++) 
+				board[x] = CellValue.EMPTY;
+	}
 
 
    /**
@@ -239,9 +296,33 @@ public class TicTacToeGame {
   	*/
 
 	public String toString(){
-
-		// YOUR CODE HERE 
-
+		String boardString = "";
+		for (int x = 0; x < columns*2-1; x++) {
+			boardString += "\n"
+			if (x%2 == 1) {
+				for (int y =0; y < 4*columns-1; y++) {
+					boardString+="-";
+				}
+			} else {
+				for (int y =0; y < columns; y++) {
+					String cell;
+					if (board[x/2*columns+y] == CellValue.EMPTY) 
+						cell = " ";
+					if (board[x/2*columns+y] == CellValue.X) {
+						cell = "X";
+					}else {
+						cell = "O";
+					}
+					if (y == 0 || y == columns-1) {
+						boardString+= " " + cell + " ";
+					}
+					else {
+						boardString+= "| "+ cell +" |";
+					}
+				}
+			}
+		}
+		return boardString;
 	}
 
 }

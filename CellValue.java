@@ -6,7 +6,6 @@
  * @author Guy-Vincent Jourdan, University of Ottawa
  */
 
-enum CellValue {
-
-	// YOUR CODE HERE
+public enum CellValue {
+	EMPTY,X,O;
 }
