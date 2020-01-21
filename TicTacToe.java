@@ -1,6 +1,6 @@
 
 import java.io.Console;
-
+import java.util.Scanner;
 public class TicTacToe{
 
    /**
@@ -20,10 +20,11 @@ public class TicTacToe{
         StudentInfo.display();
 
         Console console = System.console();
+		Scanner sc = new Scanner(System.in);
         TicTacToeGame game;
         int lines, columns, win;
-        lines = 3;
-        columns = 3;
+        lines = 2;
+        columns = 5;
         win = 3;
 
         if (args.length >= 2) {
@@ -48,12 +49,11 @@ public class TicTacToe{
         if (args.length > 3){
             System.out.println("Too many arguments. Only the first 3 are used.");
         } 
-        
-        game = new TicTacToeGame(lines, columns,win);
+       
 		for (int x = 0; x < lines*columns; x++) {
-			game.play(Integer.parseInt(args[x+3]));
-			if (game.getLevel() != x) {
-				x--;
+			game.play(sc.nextInt());
+			if (x != game.getLevel()) {
+					x--;
 			}
 		}
 

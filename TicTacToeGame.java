@@ -287,7 +287,7 @@ public class TicTacToeGame {
 		board = new CellValue[lines*columns];
 		for (int x  = 0; x < board.length; x++) 
 				board[x] = CellValue.EMPTY;
-		System.out.println(toString());
+		System.out.print(toString());
 		turnHelper();
 	}
 
@@ -301,58 +301,31 @@ public class TicTacToeGame {
   	*/
 
 	public String toString(){
-
 		String boardString = "";
-
-		for (int x = 0; x < columns*2-1; x++) {
-
+		for (int x = 0; x < lines*2-1; x++) {
 			boardString += "\n";
-
 			if (x%2 == 1) {
-
 				for (int y =0; y < 4*columns-1; y++) {
-
 					boardString+="-";
-
 				}
-
 			} else {
-
 				for (int y =0; y < columns; y++) {
-
 					String cell = " ";
-
 					if (board[x/2*columns+y] == CellValue.X) {
-
 						cell = "X";
-
 					}
 					if (board[x/2*columns+y] == CellValue.O) {
-
 						cell = "O";
-
 					}
-
 					if (y == 0) {
-
 						boardString+= " " + cell + " ";
-
 					}
-
 					else {
-
 						boardString+= "| "+ cell+ " ";
-
 					}
-
 				}
-
 			}
-
 		}
-
 		return boardString;
-
 	}
-
 }
