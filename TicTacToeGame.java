@@ -53,7 +53,7 @@ public class TicTacToeGame {
 		lines = 3;
 		columns = 3;
 		sizeWin = 3;
-		boardInitialization();
+		gameStart();
 	}
 
    /**
@@ -69,7 +69,7 @@ public class TicTacToeGame {
 		this.lines = lines;
 		this.columns = columns;
 		sizeWin = 3;
-		boardInitialization();
+		gameStart();
 	}
 
    /**
@@ -87,7 +87,7 @@ public class TicTacToeGame {
 		this.lines = lines;
 		this.columns = columns;
 		this.sizeWin = sizeWin;
-		boardInitialization();
+		gameStart();	
 	}
 
 
@@ -200,13 +200,7 @@ public class TicTacToeGame {
 			setGameState(i);
 			gameHelper();
 		}	
-		String player;
-		if (nextCellValue == CellValue.X) {
-			player = "X";
-		} else {
-			player = "O";
-		}	
-		System.out.println(player + " to play: ");
+		turnHelper();
 	}
 
 
@@ -226,16 +220,25 @@ public class TicTacToeGame {
     *  the index of the cell in the array board that has just 
     * been set
   	*/
-
+	
+	private void turnHelper() {
+		String player;
+		if (nextCellValue() == CellValue.X) {
+			player = "X";
+		} else {
+			player = "O";
+		}	
+		System.out.println(player + " to play: ");
+	}
 
 	private void gameHelper() {
 		if (gameState == GameState.DRAW) {
 			System.out.println("DRAW");
 		}
-		if (gameState == GameState.X_WINS) {
+		if (gameState == GameState.XWIN) {
 			System.out.println("X WINS");
 		}
-		if (gameState == GameState.O_WINS) {
+		if (gameState == GameState.OWIN) {
 			System.out.println("O WINS");
 		}
 	}
@@ -243,10 +246,10 @@ public class TicTacToeGame {
 	private void setGameState(int i){
 		if (winChecker(i)) {
 			if (board[i] == CellValue.X) {
-				gameState = GameState.X_WINS;
+				gameState = GameState.XWIN;
 				return;
 			}
-			gameState = GameState.O_WINS;
+			gameState = GameState.OWIN;
 			return;
 		}
 		if (level == board.length) {
@@ -255,13 +258,13 @@ public class TicTacToeGame {
 	}
 	
 	private boolean winChecker(int i) {
-		for (int x = lines-1; x< lines+2; x++) {
+		for (int x = columns-1; x< columns+2; x++) {
 			if ((1 + setGameStateHelper(i-x, -x) + setGameStateHelper(i+x, x)) >= sizeWin)
 				return true;
 		}
-		int currentLine = i-i%lines; 
+		int currentLine = i-i%columns; 
 		int counter = 0;
-		for (int x = 0;  x < lines; x++) {
+		for (int x = 0;  x < columns; x++) {
 			if (board[currentLine+x] == board[i]) {
 				counter ++;
 			}else{ 
@@ -274,16 +277,18 @@ public class TicTacToeGame {
 	}
 	
 	private int setGameStateHelper(int x, int increment) {
-		if (x < 0 || x >= board.length || board[x] == nextCellValue()) 
+		if (x < 0 || x >= board.length || board[x] == nextCellValue() || board[x] ==  CellValue.EMPTY)
 			return 0;
 		return 1 + setGameStateHelper(x+increment, increment);
 	}
 	
 
-	private void boardInitialization() {
+	private void gameStart() {
 		board = new CellValue[lines*columns];
 		for (int x  = 0; x < board.length; x++) 
 				board[x] = CellValue.EMPTY;
+		System.out.println(toString());
+		turnHelper();
 	}
 
 
@@ -296,33 +301,58 @@ public class TicTacToeGame {
   	*/
 
 	public String toString(){
+
 		String boardString = "";
+
 		for (int x = 0; x < columns*2-1; x++) {
-			boardString += "\n"
+
+			boardString += "\n";
+
 			if (x%2 == 1) {
+
 				for (int y =0; y < 4*columns-1; y++) {
+
 					boardString+="-";
+
 				}
+
 			} else {
+
 				for (int y =0; y < columns; y++) {
-					String cell;
-					if (board[x/2*columns+y] == CellValue.EMPTY) 
-						cell = " ";
+
+					String cell = " ";
+
 					if (board[x/2*columns+y] == CellValue.X) {
+
 						cell = "X";
-					}else {
+
+					}
+					if (board[x/2*columns+y] == CellValue.O) {
+
 						cell = "O";
+
 					}
-					if (y == 0 || y == columns-1) {
+
+					if (y == 0) {
+
 						boardString+= " " + cell + " ";
+
 					}
+
 					else {
-						boardString+= "| "+ cell +" |";
+
+						boardString+= "| "+ cell+ " ";
+
 					}
+
 				}
+
 			}
+
 		}
+
 		return boardString;
+
 	}
 
 }
