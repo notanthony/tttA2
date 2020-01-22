@@ -287,7 +287,7 @@ public class TicTacToeGame {
 		board = new CellValue[lines*columns];
 		for (int x  = 0; x < board.length; x++) 
 				board[x] = CellValue.EMPTY;
-		System.out.print(toString());
+		System.out.println(toString());
 		turnHelper();
 	}
 
