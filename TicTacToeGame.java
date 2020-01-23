@@ -8,8 +8,6 @@
  * @author Guy-Vincent Jourdan, University of Ottawa
  */
 public class TicTacToeGame {
-
-// FINISH THE VARIABLE DECLARATION
    /**
 	* The board of the game, stored as a one dimension array.
 	*/
@@ -195,12 +193,9 @@ public class TicTacToeGame {
 		}
 		board[i] = nextCellValue();
 		level++;
-		System.out.println(toString());
 		if (gameState == GameState.PLAYING) {
 			setGameState(i);
-			gameHelper();
 		}	
-		turnHelper();
 	}
 
 
@@ -221,28 +216,6 @@ public class TicTacToeGame {
     * been set
   	*/
 	
-	private void turnHelper() {
-		String player;
-		if (nextCellValue() == CellValue.X) {
-			player = "X";
-		} else {
-			player = "O";
-		}	
-		System.out.println(player + " to play: ");
-	}
-
-	private void gameHelper() {
-		if (gameState == GameState.DRAW) {
-			System.out.println("DRAW");
-		}
-		if (gameState == GameState.XWIN) {
-			System.out.println("X WINS");
-		}
-		if (gameState == GameState.OWIN) {
-			System.out.println("O WINS");
-		}
-	}
-
 	private void setGameState(int i){
 		if (winChecker(i)) {
 			if (board[i] == CellValue.X) {
@@ -287,8 +260,6 @@ public class TicTacToeGame {
 		board = new CellValue[lines*columns];
 		for (int x  = 0; x < board.length; x++) 
 				board[x] = CellValue.EMPTY;
-		System.out.println(toString());
-		turnHelper();
 	}
 
 

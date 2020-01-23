@@ -1,4 +1,3 @@
-
 import java.io.Console;
 import java.util.Scanner;
 public class TicTacToe{
@@ -16,15 +15,13 @@ public class TicTacToe{
      *            command lines parameters
      */
      public static void main(String[] args) {
-
-        StudentInfo.display();
-
+		StudentInfo.display();
         Console console = System.console();
-		Scanner sc = new Scanner(System.in);
-        TicTacToeGame game;
+		Scanner sc = new Scanner(console.reader());
+		TicTacToeGame game;
         int lines, columns, win;
-        lines = 2;
-        columns = 5;
+        lines = 3;
+        columns = 3;
         win = 3;
 
         if (args.length >= 2) {
@@ -49,14 +46,29 @@ public class TicTacToe{
         if (args.length > 3){
             System.out.println("Too many arguments. Only the first 3 are used.");
         } 
-       
-		for (int x = 0; x < lines*columns; x++) {
-			game.play(sc.nextInt());
-			if (x != game.getLevel()) {
-					x--;
+		
+		game = new TicTacToeGame(lines, columns, win);
+		while (GameState.PLAYING == game.getGameState()) {
+			System.out.println(game.toString());
+			String player;
+			if (game.nextCellValue() == CellValue.X) {
+				player = "X";
+			} else {
+				player = "O";
 			}
+			System.out.print(player + " to play: ");
+			game.play(sc.nextInt());
 		}
-
+		System.out.println(game.toString());
+		if (game.getGameState() == GameState.DRAW) {
+			System.out.println("DRAW");
+		}
+		if (game.getGameState() == GameState.XWIN) {
+			System.out.println("X WINS");
+		}
+		if (game.getGameState() == GameState.OWIN) {
+			System.out.println("O WINS");
+		}
     }
 
 }
