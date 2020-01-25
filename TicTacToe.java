@@ -57,7 +57,7 @@ public class TicTacToe{
 				player = "O";
 			}
 			System.out.print(player + " to play: ");
-			game.play(sc.nextInt());
+			game.play(sc.nextInt()-1);
 		}
 		System.out.println(game.toString());
 		if (game.getGameState() == GameState.DRAW) {
