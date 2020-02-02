@@ -16,8 +16,8 @@ public class StudentInfo {
     public static void display() {
 
         System.out.println("************************************************************");
-        System.out.println("*                                                          *");
-        System.out.println("*                                                          *");
+        System.out.println("Anthony Zhao, 300130883, ITI1121 - C04                     *");
+        System.out.println("Bradley Liu, 300125419, ITI1121 - A02                      *");
         System.out.println("*                                                          *");
         System.out.println("*                                                          *");
         System.out.println("************************************************************");
