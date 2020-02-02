@@ -3,7 +3,7 @@
  * values <b>Empty</b>,  <b>X</b>
  * and <b>O</b>.
  *
- * @author Guy-Vincent Jourdan, University of Ottawa
+ * @author Anthony Zhao and Bradley Liu
  */
 
 public enum CellValue {

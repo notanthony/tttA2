@@ -1,5 +1,11 @@
 import java.io.Console;
 import java.util.Scanner;
+/**
+ * The class <b>TicTacToe</b> is the
+ * class that users to play TicTacToe
+ * using the logic from TicTacToeGame
+ * @author Anthony Zhao and Bradley Liu
+ */
 public class TicTacToe{
 
    /**
@@ -48,17 +54,23 @@ public class TicTacToe{
         } 
 		
 		game = new TicTacToeGame(lines, columns, win);
-		while (GameState.PLAYING == game.getGameState()) {
+		//will prompt user to play the game until the game is finished
+		while (GameState.PLAYING == game.getGameState()) 
+			//prints the game board
 			System.out.println(game.toString());
-			String player;
+			String player = "";
+			//determines the current turn
 			if (game.nextCellValue() == CellValue.X) {
 				player = "X";
 			} else {
 				player = "O";
 			}
+			//prompts the player to play
 			System.out.print(player + " to play: ");
+			//sends the players move to TicTacToeGame but since users usally consider the first index 1 instead of 0 decrements their play by 1 to fit the java standard
 			game.play(sc.nextInt()-1);
 		}
+		//prints out the final game board and the end state of the game
 		System.out.println(game.toString());
 		if (game.getGameState() == GameState.DRAW) {
 			System.out.println("DRAW");

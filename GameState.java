@@ -3,7 +3,7 @@
  * values <b>PLAYING</b>,  <b>DRAW</b>,
  *  <b>XWIN</b> and <b>OWIN</b>
  *
- * @author Guy-Vincent Jourdan, University of Ottawa
+ * @author Anthony Zhao and Bradley Liu
  */
 
 public enum GameState{

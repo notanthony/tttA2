@@ -5,9 +5,9 @@
  * It automatically maintain the current state of
  * the game as players are making moves.
  *
- * @author Guy-Vincent Jourdan, University of Ottawa
+ * @author Anthony Zhao and Bradley Liu
  */
-public class TicTacToeGame {
+public class TicTacToeGame 	  
    /**
 	* The board of the game, stored as a one dimension array.
 	*/
@@ -88,7 +88,14 @@ public class TicTacToeGame {
 		gameStart();	
 	}
 
-
+	/**
+	* This method intilizizes the values in board
+	*/
+	private void gameStart() {
+		board = new CellValue[lines*columns];
+		for (int x  = 0; x < board.length; x++) 
+				board[x] = CellValue.EMPTY;
+	}
 
    /**
 	* getter for the variable lines
@@ -193,6 +200,7 @@ public class TicTacToeGame {
 		}
 		board[i] = nextCellValue();
 		level++;
+		//only checks if someone won if someone did not already win
 		if (gameState == GameState.PLAYING) {
 			setGameState(i);
 		}	
@@ -215,9 +223,9 @@ public class TicTacToeGame {
     *  the index of the cell in the array board that has just 
     * been set
   	*/
-	
 	private void setGameState(int i){
 		if (winChecker(i)) {
+			//checks which player made the winning move
 			if (board[i] == CellValue.X) {
 				gameState = GameState.XWIN;
 				return;
@@ -225,19 +233,41 @@ public class TicTacToeGame {
 			gameState = GameState.OWIN;
 			return;
 		}
+		//if the board is full and the game has not been won then its a draw
 		if (level == board.length) {
 			gameState = GameState.DRAW;
 		}
 	}
 	
-	private boolean winChecker(int i) {
+	/**
+	* A helper method that determines if the game state
+   	* @param i
+    *  the index of the cell in the array board that has just 
+    * been set
+	* @return 
+	*  wether or not the play won the game
+  	*/
+	private boolean setGameStateHelper(int i) {
+		/*The values of the for loop indicate the incrementer for the other method 
+		 *columns-1 checks in a diagonal that looks like /
+		 *columns checks vertically from the index played, looks like |
+		 *columns+1 checks in a diagonal that looks like \
+		 */
+		
 		for (int x = columns-1; x< columns+2; x++) {
-			if ((1 + setGameStateHelper(i-x, -x) + setGameStateHelper(i+x, x)) >= sizeWin)
+			/*calls another method to count the amount of the players symbol in a row
+			 *if it is equal or greater to the amount needed to win then returns true
+			 *since the method called is recursive to prevent a stackoverflow it calls the method twice. one call decrementing the values and one incrementing
+			 */
+			if ((1 + winChecker(i-x, -x) + winChecker(i+x, x)) >= sizeWin)
 				return true;
 		}
+		//finds the start of the line by subtracting the index value by i%coloumn which gives the current coloumn on the line
 		int currentLine = i-i%columns; 
 		int counter = 0;
+		//to simplify finding if a win was made horizontally the for loop runs through the entire line
 		for (int x = 0;  x < columns; x++) {
+			//if a cell matches the symbol of the current player the counter is incremented but once the streak is broken the counter is reset
 			if (board[currentLine+x] == board[i]) {
 				counter ++;
 			}else{ 
@@ -249,19 +279,22 @@ public class TicTacToeGame {
 		return false;
 	}
 	
-	private int setGameStateHelper(int x, int increment) {
+	/**
+	* A helper method that counts the amount of matches in a row
+   	* @param x
+    *  the index of the cell that has to be checked
+	* @param increment
+	*  the incrementer of the index value to determine the next cell
+	* @return 
+	*  the amount of matches in a row
+  	*/
+	private int winChecker(int x, int increment) {
+		//base case is reached when the index is out of bounds or the streak is broken
 		if (x < 0 || x >= board.length || board[x] == nextCellValue() || board[x] ==  CellValue.EMPTY)
 			return 0;
+		//pushes the next index into the stack, the 1 + will increment the final return value when the compiler reaches the base case and iterates through the stack
 		return 1 + setGameStateHelper(x+increment, increment);
 	}
-	
-
-	private void gameStart() {
-		board = new CellValue[lines*columns];
-		for (int x  = 0; x < board.length; x++) 
-				board[x] = CellValue.EMPTY;
-	}
-
 
    /**
 	* Returns a String representation of the game matching
@@ -270,27 +303,41 @@ public class TicTacToeGame {
    	* @return
     *  String representation of the game
   	*/
-
 	public String toString(){
+		//intilizizes the return string that holds the board as its constructed
 		String boardString = "";
+		//for loop that iterates through every line of the game since every other line is a seperator line, made only of -'s, it needs to run lines*2-1 times
 		for (int x = 0; x < lines*2-1; x++) {
 			boardString += "\n";
+			//if its an odd line then it is a seperator line
 			if (x%2 == 1) {
+				//the amount of - in the examples given is 4*coloumns-1
 				for (int y =0; y < 4*columns-1; y++) {
 					boardString+="-";
 				}
+			//non seperator lines
 			} else {
-				for (int y =0; y < columns; y++) {
+				/*Since the for loop goes by coloumns a variable currentLine is intialized aswell for later use
+				 *x/2*columns is used to determine the array index of the current line, since the array is really just a 1d array representing a 2d array
+				 *x/2 determines the line and *columns finds the index the line starts at since each line is coloums long
+				 */
+				for (int y =0, int currentLine = x/2*columns; y < columns; y++) {
+					/*This section determines which symbol to print, the default print is " " for empty cells
+					 *if there is something in the cell it replaces the " ", to do this the index of the array needs to be found
+					 *using the index of the current line the +y increments it to the coloumn in that line
+					 */
 					String cell = " ";
-					if (board[x/2*columns+y] == CellValue.X) {
+					if (board[currentLine+y] == CellValue.X) {
 						cell = "X";
 					}
-					if (board[x/2*columns+y] == CellValue.O) {
+					if (board[currentLine+y] == CellValue.O) {
 						cell = "O";
 					}
-					if (y == 0) {
+					//this constucts the coloumn using the template "(space)(symbol)(space)"the first line is special since it does not have a seperator 
+					if (y == 0) {						
 						boardString+= " " + cell + " ";
 					}
+					//every other line has a | seperating it
 					else {
 						boardString+= "| "+ cell+ " ";
 					}
