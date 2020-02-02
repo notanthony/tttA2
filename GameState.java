@@ -7,5 +7,5 @@
  */
 
 public enum GameState{
-	PLAYING, DRAW, XWIN, OWIN;//group of constant variables 
+	PLAYING, DRAW, XWIN, OWIN;
 }

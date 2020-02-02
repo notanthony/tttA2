@@ -24,7 +24,7 @@ public class TicTacToe{
 		StudentInfo.display();
         Console console = System.console();
 		Scanner sc = new Scanner(console.reader());
-		TicTacToeGame game;// create an object belonging to the class TicTacToeGame
+		TicTacToeGame game;
         int lines, columns, win;
         lines = 3;
         columns = 3;
@@ -72,13 +72,13 @@ public class TicTacToe{
 		}
 		//prints out the final game board and the end state of the game
 		System.out.println(game.toString());
-		if (game.getGameState() == GameState.DRAW) {//if statement that runs only if the object's gamestate is equal to constant DRAW  
+		if (game.getGameState() == GameState.DRAW) {
 			System.out.println("DRAW");
 		}
-		if (game.getGameState() == GameState.XWIN) {//if statement that runs only if the object's gamestate is equal to constant XWIN 
+		if (game.getGameState() == GameState.XWIN) {
 			System.out.println("X WINS");
 		}
-		if (game.getGameState() == GameState.OWIN) {//if statement that runs only if the object's gamestate is equal to constant OWIN 
+		if (game.getGameState() == GameState.OWIN) {
 			System.out.println("O WINS");
 		}
     }
