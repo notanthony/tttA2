@@ -315,7 +315,7 @@ public class TicTacToeGame {
 		if (x < 0 || x >= board.length || board[x] == nextCellValue() || board[x] == CellValue.EMPTY)
 			return 0;
 		// the one that goes like / needs special cases
-		if ((x + 1) % columns == 0 && -increment == columns - 1) {
+		if ((increment == columns - 1 && x%columns == 0) || ((x + 1) % columns == 0 && -increment == columns - 1)) {
 			return 1;
 		}
 
