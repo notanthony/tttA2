@@ -3,7 +3,7 @@
  * Game. It contains the grid and tracks its progress. It automatically maintain
  * the current state of the game as players are making moves.
  *
- * @author Anthony Zhao and Bradley Liu
+ * @author Anthony Zhao and Cadence Yeung
  */
 public class TicTacToeGame {
 	/**

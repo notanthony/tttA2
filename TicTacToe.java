@@ -5,7 +5,7 @@ import java.util.Scanner;
  * The class <b>TicTacToe</b> is the class that users to play TicTacToe using
  * the logic from TicTacToeGame
  * 
- * @author Anthony Zhao and Bradley Liu
+ * @author Anthony Zhao and Cadence Yeung
  */
 public class TicTacToe {
 
@@ -55,15 +55,19 @@ public class TicTacToe {
 		game = new TicTacToeGame(lines, columns, win);
 		// will prompt user to play the game until the game is finished
 		while (GameState.PLAYING == game.getGameState()) {
-			// prints the game board
-			System.out.println(game.toString());
-			String player = "";
 			// determines the current turn
+			String player = "";
 			if (game.nextCellValue() == CellValue.X) {
 				player = "X";
 			} else {
 				player = "O";
-			}
+			} // prints whether it is player 1 or player 2's turn (player 1 is X, player 2 is O)
+			if (player.equals("X")){
+				System.out.print("Player 1's turn.");
+			} else {
+				System.out.print("Player 2's turn.");
+			} // prints game board
+			System.out.println(game.toString());
 			// prompts the player to play
 			System.out.print(player + " to play: ");
 			// sends the players move to TicTacToeGame but since users usually consider the
@@ -83,5 +87,4 @@ public class TicTacToe {
 			System.out.println("O WINS");
 		}
 	}
-
 }
