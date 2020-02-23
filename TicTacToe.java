@@ -1,105 +1,73 @@
-import java.io.Console;
-import java.util.Scanner;
 
-/**
- * The class <b>TicTacToe</b> is the class that users to play TicTacToe using
- * the logic from TicTacToeGame
- * 
- * @author Anthony Zhao and Cadence Yeung
- */
-public class TicTacToe {
 
-	/**
-	 * <b>main</b> of the application. Creates the instance of TicTacToeGame and
-	 * starts the game. If two parameters lines and columns are passed, they are
-	 * used. If the paramters lines, columns and win are passed, they are used.
-	 * Otherwise, a default value is used. Defaults values (3) are also used if the
-	 * paramters are too small (less than 2). Here, we assume that the command lines
-	 * arguments are indeed integers
-	 *
-	 * @param args command lines parameters
-	 */
-	public static void main(String[] args) {
-		StudentInfo.display();
-		Console console = System.console();
-		Scanner sc = new Scanner(console.reader());
-		TicTacToeGame game;
-		int lines, columns, win;
-		lines = 3;
-		columns = 3;
-		win = 3;
+public class TicTacToe{
 
-		if (args.length >= 2) {
-			lines = Integer.parseInt(args[0]);
-			if (lines < 2) {
-				System.out.println("Invalid argument, using default...");
-				lines = 3;
+   /**
+     * <b>main</b> of the application. Creates the instance of  GameController 
+     * and starts the game. If two parameters line  and column
+     * are passed, they are used. 
+     * Otherwise, a default value is used. Defaults values are also
+     * used if the paramters are too small (less than 2).
+     * 
+     * @param args
+     *            command line parameters
+     */
+     public static void main(String[] args) {
+
+        StudentInfo.display();
+        TicTacToeGame game;
+        int lines = 3;
+        int columns = 3;
+        int win = 3;
+		
+
+   
+        try{
+            if (args.length >= 2) {
+                lines = Integer.parseInt(args[0]);
+                if(lines<2){
+                    System.out.println("Invalid argument, using default...");
+                    lines = 3;
+                }
+                columns = Integer.parseInt(args[1]);
+                if(columns<2){
+                    System.out.println("Invalid argument, using default...");
+                    columns = 3;
+                }
+            }
+            if (args.length >= 3){
+                win = Integer.parseInt(args[2]);
+                if(win<2){
+                    System.out.println("Invalid argument, using default...");
+                    win = 3;
+                }
+            } 
+            if (args.length > 3){
+                System.out.println("Too many arguments. Only the first 3 are used.");
+            } 
+
+        } catch(NumberFormatException e){
+            System.out.println("Invalid argument, using default...");
+            lines   = 3;
+            columns  = 3;
+            win = 3;
+        }
+        Player[] players = {new HumanPlayer(), new ComputerRandomPlayer};
+        int first = 0+Utils.generator.nextInt(2);
+		do {
+			for (int counter = first; game.getGameState() == GameState.PLAYING; counter++) {
+				if (counter%2 == 0) {
+					System.out.println("Player 1's Turn" + Utils.NEW_LINE + game + Utils.NEW_LINE + game.getNextCellValue + " to play: ");
+					players[0].play(game);
+				
+				} else {
+					System.out.println("Player 2's Turn");
+					players[1].play(game);
+				}
 			}
-			columns = Integer.parseInt(args[1]);
-			if (columns < 2) {
-				System.out.println("Invalid argument, using default...");
-				columns = 3;
-			}
-		}
-		if (args.length >= 3) {
-			win = Integer.parseInt(args[2]);
-			if (win < 2) {
-				System.out.println("Invalid argument, using default...");
-				win = 3;
-			}
-		}
-		if (args.length > 3) {
-			System.out.println("Too many arguments. Only the first 3 are used.");
-		}
+			first++;
+			System.out.println("Result: " + game.getGameState() + Utils.NEW_LINE + "Play again (Y)?:");
+		} while (Utils.console.readLine().compareToIgnoreCase("y") == 0);
+    }
 
-		Player[] players;
-
-		// YOUR CODE HERE
-
-		game = new TicTacToeGame(lines, columns, win);
-
-		// decides whether cpu or human goes first
-		players = new Player[2];
-		players[0] = new HumanPlayer();
-		players[1] = new ComputerRandomPlayer();
-
-		double number = Math.round(Math.random());
-		int number2 = (int) number;
-		players[number2].play(game);
-
-
-		// will prompt user to play the game until the game is finished
-		while (GameState.PLAYING == game.getGameState()) {
-			// determines the current turn
-			String player = "";
-			if (game.nextCellValue() == CellValue.X) {
-				player = "X";
-			} else {
-				player = "O";
-			} // prints whether it is player 1 or player 2's turn (player 1 is X, player 2 is O)
-			if (player.equals("X")){
-				System.out.print("Player 1's turn.");
-			} else {
-				System.out.print("Player 2's turn.");
-			} // prints game board
-			System.out.println(game.toString());
-			// prompts the player to play
-			System.out.print(player + " to play: ");
-			// sends the players move to TicTacToeGame but since users usually consider the
-			// first index 1 instead of 0 decrements their play by 1 to fit the java
-			// standard
-			game.play(sc.nextInt() -1);
-		}
-		// prints out the final game board and the end state of the game
-		System.out.println(game.toString());
-		if (game.getGameState() == GameState.DRAW) {
-			System.out.println("DRAW");
-		}
-		if (game.getGameState() == GameState.XWIN) {
-			System.out.println("X WINS");
-		}
-		if (game.getGameState() == GameState.OWIN) {
-			System.out.println("O WINS");
-		}
-	}
 }
