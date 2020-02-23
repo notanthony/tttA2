@@ -1,0 +1,77 @@
+public class Q3 {
+	public boolean equals(TicTacToeGame other) {
+		if (other.getLevel() == level && other.lines == lines && columns == other.columns && other.sizeWin == sizeWin && other.getGameState() == gameState && board[4] == other.valueAt(4)) {
+			CellValue[] arr = new CellValue[other.lines*other.columns];
+			for (int x = 0; x < arr.length; x++) {
+				arr[x] = other.valueAt(x);
+			}
+			boolean returned = helperCheck(arr);
+			if (returned) {
+				return true;
+			}
+			//left right / reflection changes the temp arr so it can check other cases
+			CellValue temp =  arr[8];
+			arr[8] = arr[0];
+			arr[0] = temp;
+			for (int x = 1; x < 4; x+=2) {
+				temp = arr[x];
+				arr[x] = arr[x+4];
+				arr[x+4] = temp;
+			}
+			return helperCheck(arr);
+		}
+		return false;
+	}
+	
+	private boolean helperCheck(CellValue[] arr) {
+		boolean returned = true; 
+		for (int x = 0; x < arr.length; x++) {
+			if (arr[x] != board[x]) {
+				returned = false;
+				break;
+			}
+		}
+		if (returned) {
+			return true;
+		}
+		returned = true;
+		//vertical | reflection
+		if (board[1] == arr[1] && board[7] == arr[7]) {
+			for (int line = 0; line < lines; line ++) {
+				int baseIncrement = lines*lines;
+				if (board[baseIncrement] != arr[baseIncrement+2] || board[baseIncrement+2] != arr[baseIncrement]) {
+					returned = false;
+					break;
+				}
+			}
+		}
+		if (returned) {
+			return true;
+		}
+		returned = true;
+		//horizontal -- reflection
+		if (board[3] == arr[3] && board[5] == arr[5]) {
+			for (int col = 0; col < columns; col ++) {
+				int baseIncrement = lines*2;
+				if (board[col + baseIncrement] != arr[col] || board[col] != arr[col + baseIncrement]) {
+					returned = false;
+					break;
+				}
+			}
+		}
+		if (returned) {
+			return true;
+		}
+		returned = true;
+		//left to right \ reflection
+		if (board[0] == arr[0] && board[8] == arr[8] && (board[6] != arr[2] || board[2] != arr[6])) {
+			for (int x = 1; x < 6; x+=4) {
+				if (board[x] != arr[x+2] || board[x+2] != arr[x]) {
+					returned = false;
+					break;
+				}
+			}
+		}
+		return returned;
+	}
+}
