@@ -3,7 +3,7 @@
 * methods call to show the student information. Fill the box with your personal
 * information.
 *
-* @author Anthony Zhao and Bradley Liu
+* @author Anthony Zhao and Cadence Yeung
 */
 
 public class StudentInfo {
@@ -18,7 +18,7 @@ public class StudentInfo {
         System.out.println("************************************************************");
         System.out.println("*                                                          *");
         System.out.println("*        Anthony Zhao, 300130883, Class C00, Lab C04       *");
-        System.out.println("*        Bradley Liu, 300125419, Class A00, Lab A02        *");
+        System.out.println("*        Cadence Yeung, 300125035, Class C00, Lab C01      *");
         System.out.println("*                                                          *");
         System.out.println("************************************************************");
         System.out.println();
