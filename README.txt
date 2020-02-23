@@ -1,5 +1,5 @@
-Assignment 1
+Assignment 2
 ITI1121
 Anthony Zhao 300130883 Lab C-04
-Bradley Liu 3000125419 Lab A-02 
+Cadence Yeung 3000125035 Lab C-01
 Two player Tic Tac Toe game.
