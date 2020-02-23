@@ -19,7 +19,7 @@ public class TicTacToeGame {
 	/**
 	 * gameState records the current state of the game
 	 */
-	private GameState gameState = GameState.PLAYING;
+	private GameState gameState;
 
 	/**
 	 * lines is the number of lines in the grid
@@ -41,10 +41,7 @@ public class TicTacToeGame {
 	 * default constructor, for a game of 3x3, which must align 3 cells
 	 */
 	public TicTacToeGame() {
-		lines = 3;
-		columns = 3;
-		sizeWin = 3;
-		gameStart();
+		this(3,3);
 	}
 
 	/**
@@ -55,10 +52,7 @@ public class TicTacToeGame {
 	 * @param columns the number of columns in the game
 	 */
 	public TicTacToeGame(int lines, int columns) {
-		this.lines = lines;
-		this.columns = columns;
-		sizeWin = 3;
-		gameStart();
+		this(lines, columns, 3);
 	}
 
 	/**
@@ -74,6 +68,7 @@ public class TicTacToeGame {
 		this.columns = columns;
 		this.sizeWin = sizeWin;
 		gameStart();
+		gameState = GameState.PLAYING;
 	}
 
 	/**
@@ -145,7 +140,7 @@ public class TicTacToeGame {
 
 	/**
 	 * returns the value of the cell at index i. If the index is invalid, an error
-	 * message is printed out. The behaviour is then unspecified
+	 * message is printed out. The behavior is then unspecified
 	 * 
 	 * @param i the index of the cell in the array board
 	 * @return the value at index i in the variable board.
@@ -157,10 +152,10 @@ public class TicTacToeGame {
 	/**
 	 * This method is called when the next move has been decided by the next player.
 	 * It receives the index of the cell to play as parameter. If the index is
-	 * invalid, an error message is printed out. The behaviour is then unspecified
+	 * invalid, an error message is printed out. The behavior is then unspecified
 	 * If the chosen cell is not empty, an error message is printed out. The
-	 * behaviour is then unspecified If the move is valide, the board is updated, as
-	 * well as the state of the game. To faciliate testing, is is acceptable to keep
+	 * behaviour is then unspecified If the move is valid, the board is updated, as
+	 * well as the state of the game. To facilitate testing, is is acceptable to keep
 	 * playing after a game is already won. If that is the case, the a message
 	 * should be printed out and the move recorded. the winner of the game is the
 	 * player who won first
@@ -213,119 +208,66 @@ public class TicTacToeGame {
 	}
 
 	/**
-	 * 
 	 * A helper method that determines if the game state
 	 * 
-	 * @param i
-	 * 
-	 *          the index of the cell in the array board that has just
-	 * 
-	 *          been set
-	 * 
-	 * @return
-	 * 
-	 *         wether or not the play won the game
-	 * 
+	 * @param i, the index of the cell in the array board that has just been set
+	 * @return whether or not the play won the game
 	 */
 
 	private boolean setGameStateHelper(int i) {
-
-		/*
-		 * The values of the for loop indicate the incrementer for the other method
-		 * 
-		 * columns checks vertically from the index played, looks like |
-		 * 
-		 * columns+1 checks in a diagonal that looks like \
-		 * 
-		 */
-
-		for (int x = columns - 1; x < columns + 2; x++) {
-			/*
-			 * calls another method to count the amount of the players symbol in a row
-			 * repeats the first cell so -1
-			 * if it is equal or greater to the amount needed to win then returns true
-			 * 
-			 * since the method called is recursive to prevent a stackoverflow it calls the
-			 * method twice. one call decrementing the values and one incrementing
-			 * 
-			 */
-			if ((winChecker(i, -x) + winChecker(i, x) - 1) >= sizeWin) {
-				return true;
-			}
-
-		}
-
-		// finds the start of the line by subtracting the index value by i%column which
-		// gives the current column on the line
-		int currentLine = i - i % columns;
-
-		int counter = 0;
-
-		// to simplify finding if a win was made horizontally the for loop runs through
-		// the entire line
-
-		for (int x = 0; x < columns; x++) {
-
-			// if a cell matches the symbol of the current player the counter is incremented
-			// but once the streak is broken the counter is reset
-
-			if (board[currentLine + x] == board[i]) {
-
-				counter++;
-
-			} else {
-
-				counter = 0;
-
-			}
-
-			if (counter == sizeWin)
-
-				return true;
-
-		}
-
-		return false;
-
+		return winChecker(i,i,-1,-columns+1);
 	}
 
 	/**
-	 * 
 	 * A helper method that counts the amount of matches in a row
 	 * 
-	 * @param x
-	 * 
-	 *                  the index of the cell that has to be checked
-	 * 
-	 * @param increment
-	 * 
-	 *                  the incrementer of the index value to determine the next
-	 *                  cell
-	 * 
-	 * @return
-	 * 
-	 *         the amount of matches in a row
-	 * 
+	 * @param x,         the index of the cell that has to be checked
+	 * @param increment, used to increment the index value to determine the next
+	 *                   cell
+	 * @return the amount of matches in a row
 	 */
-
-	private int winChecker(int x, int increment) {
-
-
-		// base case is reached when the index is out of bounds or the streak is broken
-		if (x < 0 || x >= board.length || board[x] == nextCellValue() || board[x] == CellValue.EMPTY)
-			return 0;
-		// the one that goes like / needs special cases
-		if ((increment == columns - 1 && x%columns == 0) || ((x + 1) % columns == 0 && -increment == columns - 1)) {
-			return 1;
+	private boolean winChecker(int x, int i, int counter, int increment) {
+		/* The values of the recusion increment with different values checking for tictactoe wins
+		 * columns checks vertically like |
+		 * columns+1 checks diagonally like \
+		 * columns-1 is a special case, checks diagonally like \
+		 * 1 is a special case, checks horizontally
+		 * Special Case:
+		 * the issue is when it reaches an end it will check the 
+		 * next line if possible instead of overflowing like the 
+		 * others so a if statement for this is implemented in the recusion
+		 */
+		
+		// checks if the index is out of bounds or the streak is broken
+		if (x < 0 || x >= board.length || board[x] != board[i]) {
+			//used to find the first index
+			if (increment > 0) {
+				//checks win condition
+				if (counter >= sizeWin) {
+					return true;
+				}
+				//for horizontal checking
+				if (increment == columns+1) {
+					return winChecker(i, i, -1, -1);
+				}
+				//end case its horizontal checking and its not a win so end 
+				if (increment == 1) {
+					return false;
+				}
+				//moves onto the next increment value
+				return winChecker(i, i, -1, -increment-1);
+			}
+			//checks from the first index with a positive increment
+			return winChecker(i, i, counter, -increment);
 		}
-
-		// pushes the next index into the stack, the 1 + will increment the final return
-		// value when the compiler reaches the base case and iterates through the stack
-
-		return 1 + winChecker(x + increment, increment);
-
+		//special case
+		if (((increment == columns - 1||-increment == 1) && x % columns == 0) || ((x + 1) % columns == 0 && (-increment == columns - 1|| increment == 1))) {
+			return winChecker(-1, i, ++counter, increment);
+		}
+		//normal recursive stuff
+		return winChecker(x + increment, i, ++counter, increment);
 	}
-
+	
 	/**
 	 * Returns a String representation of the game matching the example provided in
 	 * the assignment's description
@@ -333,23 +275,23 @@ public class TicTacToeGame {
 	 * @return String representation of the game
 	 */
 	public String toString() {
-		// intilizizes the return string that holds the board as its constructed
+		// initializes the return string that holds the board as its constructed
 		String boardString = "";
 		// for loop that iterates through every line of the game since every other line
-		// is a seperator line, made only of -'s, it needs to run lines*2-1 times
+		// is a separator line, made only of -'s, it needs to run lines*2-1 times
 		for (int x = 0; x < lines * 2 - 1; x++) {
 			boardString += "\n";
-			// if its an odd line then it is a seperator line
+			// if its an odd line then it is a separator line
 			if (x % 2 == 1) {
 				// the amount of - in the examples given is 4*columns-1
 				for (int y = 0; y < 4 * columns - 1; y++) {
 					boardString += "-";
 				}
-				// non seperator lines
+				// non separator lines
 			} else {
 				/*
-				 * Since the for loop goes by columns a variable currentLine is intialized
-				 * aswell for later use x/2*columns is used to determine the array index of the
+				 * Since the for loop goes by columns a variable currentLine is initialized
+				 * as well for later use x/2*columns is used to determine the array index of the
 				 * current line, since the array is really just a 1d array representing a 2d
 				 * array x/2 determines the line and *columns finds the index the line starts at
 				 * since each line is columns long
@@ -369,12 +311,12 @@ public class TicTacToeGame {
 					if (board[currentLine + y] == CellValue.O) {
 						cell = "O";
 					}
-					// this constucts the columns using the template "(space)(symbol)(space)"the
-					// first line is special since it does not have a seperator
+					// this constructs the columns using the template "(space)(symbol)(space)"the
+					// first line is special since it does not have a separator
 					if (y == 0) {
 						boardString += " " + cell + " ";
 					}
-					// every other line has a | seperating it
+					// every other line has a | separating it
 					else {
 						boardString += "| " + cell + " ";
 					}
