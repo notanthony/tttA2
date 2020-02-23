@@ -52,7 +52,22 @@ public class TicTacToe {
 			System.out.println("Too many arguments. Only the first 3 are used.");
 		}
 
+		Player[] players;
+
+		// YOUR CODE HERE
+
 		game = new TicTacToeGame(lines, columns, win);
+
+		// decides whether cpu or human goes first
+		players = new Player[2];
+		players[0] = new HumanPlayer();
+		players[1] = new ComputerRandomPlayer();
+
+		double number = Math.round(Math.random());
+		int number2 = (int) number;
+		players[number2].play(game);
+
+
 		// will prompt user to play the game until the game is finished
 		while (GameState.PLAYING == game.getGameState()) {
 			// determines the current turn
