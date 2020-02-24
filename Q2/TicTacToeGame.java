@@ -1,328 +1,366 @@
 /**
- * The class <b>TicTacToeGame</b> is the class that implements the Tic Tac Toe
- * Game. It contains the grid and tracks its progress. It automatically maintain
- * the current state of the game as players are making moves.
+ * The class <b>TicTacToeGame</b> is the
+ * class that implements the Tic Tac Toe Game.
+ * It contains the grid and tracks its progress.
+ * It automatically maintain the current state of
+ * the game as players are making moves.
  *
  * @author Anthony Zhao and Cadence Yeung
  */
 public class TicTacToeGame {
-	/**
-	 * The board of the game, stored as a one dimension array.
-	 */
+
+   /**
+	* The board of the game, stored as a single array.
+	*/
 	private CellValue[] board;
 
-	/**
-	 * level records the number of rounds that have been played so far.
-	 */
+
+   /**
+	* level records the number of rounds that have been
+	* played so far. Starts at 0.
+	*/
 	private int level;
 
-	/**
-	 * gameState records the current state of the game
-	 */
+   /**
+	* gameState records the current state of the game.
+	*/
 	private GameState gameState;
 
-	/**
-	 * lines is the number of lines in the grid
-	 */
-	private int lines;
 
-	/**
-	 * columns is the number of columns in the grid
-	 */
-	private int columns;
+   /**
+	* lines is the number of lines in the grid
+	*/
+	public final int lines;
 
-	/**
-	 * sizeWin is the number of cell of the same type that must be aligned to win
-	 * the game
-	 */
-	private int sizeWin;
+   /**
+	* columns is the number of columns in the grid
+	*/
+	public final int columns;
 
-	/**
-	 * default constructor, for a game of 3x3, which must align 3 cells
-	 */
-	public TicTacToeGame() {
-		this(3,3);
+
+   /**
+	* sizeWin is the number of cell of the same type
+	* that must be aligned to win the game
+	*/
+	public final int sizeWin;
+
+
+   /**
+	* default constructor, for a game of 3x3, which must
+	* align 3 cells
+	*/
+	public TicTacToeGame(){
+		this(3,3,3);
 	}
 
-	/**
-	 * constructor allowing to specify the number of lines and the number of columns
-	 * for the game. 3 cells must be aligned.
-	 * 
-	 * @param lines   the number of lines in the game
-	 * @param columns the number of columns in the game
-	 */
-	public TicTacToeGame(int lines, int columns) {
+   /**
+	* constructor allowing to specify the number of lines
+	* and the number of columns for the game. 3 cells must
+	* be aligned.
+   	* @param lines
+    *  the number of lines in the game
+    * @param columns
+    *  the number of columns in the game
+  	*/
+	public TicTacToeGame(int lines, int columns){
 		this(lines, columns, 3);
 	}
 
-	/**
-	 * constructor allowing to specify the number of lines and the number of columns
-	 * for the game, as well as the number of cells that must be aligned to win.
-	 * 
-	 * @param lines   the number of lines in the game
-	 * @param columns the number of columns in the game
-	 * @param sizeWin the number of cells that must be aligned to win.
-	 */
-	public TicTacToeGame(int lines, int columns, int sizeWin) {
+   /**
+	* constructor allowing to specify the number of lines
+	* and the number of columns for the game, as well as 
+	* the number of cells that must be aligned to win.
+   	* @param lines
+    *  the number of lines in the game
+    * @param columns
+    *  the number of columns in the game
+    * @param sizeWin
+    *  the number of cells that must be aligned to win.
+  	*/
+	public TicTacToeGame(int lines, int columns, int sizeWin){
 		this.lines = lines;
 		this.columns = columns;
 		this.sizeWin = sizeWin;
-		gameStart();
+		board = new CellValue[lines*columns];
+		for(int i = 0; i < lines*columns ; i ++) {
+			board[i] = CellValue.EMPTY;
+		}
+		level = 0;
 		gameState = GameState.PLAYING;
 	}
 
-	/**
-	 * This method intilizizes the values in board
-	 */
-	private void gameStart() {
-		board = new CellValue[lines * columns];
-		for (int x = 0; x < board.length; x++)
-			board[x] = CellValue.EMPTY;
+
+   /**
+	* constructor allowing to create a new game based
+	* on an exisiting game, on which one move is added.
+	* The resulting new instance is a deep copy of
+	* the game reference passed as parameter.
+   	* @param base
+    *  the TicTacToeGame instance on which this new game
+    *  is based
+    * @param next
+    *  the index of the next move.
+  	*/
+
+	public TicTacToeGame(TicTacToeGame base, int next){
+		lines = base.lines;
+		columns = base.columns;
+		sizeWin = base.sizeWin;
+		level = base.getLevel();
+		gameState = base.getGameState();
+		board = new CellValue[lines*columns];
+		for (int x =0; x < board.length; x++) {
+			board[x] = base.valueAt(x);
+		}
+		play (next);
 	}
 
-	/**
-	 * getter for the variable lines
-	 * 
-	 * @return the value of lines
-	 */
-	public int getLines() {
-		return lines;
+
+   /**
+	* Compares this instance of the game with the
+	* instance passed as parameter. Return true
+	* if and only if the two instance represent
+	* the same state of the game.
+   	* @param other
+    *  the TicTacToeGame instance to be compared with this one
+  	*/
+	public boolean equals(TicTacToeGame other) {
+		//checks the variables to see if they are the sa,e
+		if (other != null && other.getLevel() == level && other.lines == lines && columns == other.columns && other.sizeWin == sizeWin && other.getGameState() == gameState) {
+			//checks to see if the boards are the same
+			for (int x = 0; x < lines*columns; x++) {
+				//if not the same false
+				if (board[x] != other.valueAt(x)) {
+					return false;
+				}
+			}
+			//if it iterates through the whole loop true
+			return true;
+		}
+		//otherwise false
+		return false;
 	}
 
-	/**
-	 * getter for the variable columns
-	 * 
-	 * @return the value of columns
-	 */
-	public int getColumns() {
-		return columns;
-	}
-
-	/**
-	 * getter for the variable level
-	 * 
-	 * @return the value of level
-	 */
-	public int getLevel() {
+   /**
+	* getter for the variable level
+	* @return
+	* 	the value of level
+	*/
+	public int getLevel(){
 		return level;
 	}
 
-	/**
-	 * getter for the variable sizeWin
-	 * 
-	 * @return the value of sizeWin
-	 */
-	public int getSizeWin() {
-		return sizeWin;
-	}
 
-	/**
-	 * getter for the variable gameState
-	 * 
-	 * @return the value of gameState
-	 */
-	public GameState getGameState() {
+   /**
+	* getter for the variable gameState
+	* @return
+	* 	the value of gameState
+	*/
+	public GameState getGameState(){
 		return gameState;
 	}
 
-	/**
-	 * returns the cellValue that is expected next, in other word, which played (X
-	 * or O) should play next. This method does not modify the state of the game.
-	 * 
-	 * @return the value of the enum CellValue corresponding to the next expected
-	 *         value.
-	 */
-	public CellValue nextCellValue() {
-		if (level % 2 == 0)
-			return CellValue.X;
-		return CellValue.O;
+   /**
+	* returns the cellValue that is expected next,
+	* in other word, which played (X or O) should 
+	* play next.
+	* This method does not modify the state of the
+	* game.
+	* @return 
+    *  the value of the enum CellValue corresponding
+    * to the next expected value.
+  	*/
+	public CellValue nextCellValue(){
+		return (level%2 == 0) ? CellValue.X : CellValue.O;
 	}
 
-	/**
-	 * returns the value of the cell at index i. If the index is invalid, an error
-	 * message is printed out. The behavior is then unspecified
-	 * 
-	 * @param i the index of the cell in the array board
-	 * @return the value at index i in the variable board.
-	 */
+   /**
+	* returns the value  of the cell at
+	* index i.
+	* If the index is invalid, an error message is
+	* printed out. The behaviour is then unspecified
+   	* @param i
+    *  the index of the cell in the array board
+    * @return 
+    *  the value at index i in the variable board.
+  	*/
 	public CellValue valueAt(int i) {
+
+		if(i < 0 || i >= lines*columns){
+			throw new IllegalArgumentException("Illegal position: " + i);
+		}
+
 		return board[i];
 	}
 
-	/**
-	 * This method is called when the next move has been decided by the next player.
-	 * It receives the index of the cell to play as parameter. If the index is
-	 * invalid, an error message is printed out. The behavior is then unspecified
-	 * If the chosen cell is not empty, an error message is printed out. The
-	 * behaviour is then unspecified If the move is valid, the board is updated, as
-	 * well as the state of the game. To facilitate testing, is is acceptable to keep
-	 * playing after a game is already won. If that is the case, the a message
-	 * should be printed out and the move recorded. the winner of the game is the
-	 * player who won first
-	 * 
-	 * @param i the index of the cell in the array board that has been selected by
-	 *          the next player
-	 */
+   /**
+	* This method is call by the next player to play
+	* at the cell  at index i.
+	* If the index is invalid, an error message is
+	* printed out. The behaviour is then unspecified
+	* If the chosen cell is not empty, an error message is
+	* printed out. The behaviour is then unspecified
+	* If the move is valide, the board is updated, as well
+	* as the state of the game.
+	* To faciliate testing, is is acceptable to keep playing
+	* after a game is already won. If that is the case, the
+	* a message should be printed out and the move recorded. 
+	* the  winner of the game is the player who won first
+   	* @param i
+    *  the index of the cell in the array board that has been 
+    * selected by the next player
+  	*/
 	public void play(int i) {
-		if (i < 0 || i >= board.length) {
-			System.out.println("Invalid argument, try again");
-			return;
+
+		if(i < 0 || i >= lines*columns){
+			throw new IllegalArgumentException("Illegal position: " + i);
 		}
-		if (board[i] != CellValue.EMPTY) {
-			System.out.println("Cell is not empty, try again");
-			return;
+		if(board[i] != CellValue.EMPTY) {
+			throw new IllegalArgumentException("CellValue not empty: " + i + " in game " + toString());			
 		}
+
 		board[i] = nextCellValue();
 		level++;
-		// only checks if someone won if someone did not already win
-		if (gameState == GameState.PLAYING) {
+		if(gameState != GameState.PLAYING) {
+			System.out.println("hum, extending a finished game... keeping original winner");
+		} else {
 			setGameState(i);
 		}
+	
 	}
 
-	/**
-	 * A helper method which updates the gameState variable correctly after the cell
-	 * at index i was just set in the method play(int i) The method assumes that
-	 * prior to setting the cell at index i, the gameState variable was correctly
-	 * set. it also assumes that it is only called if the game was not already
-	 * finished when the cell at index i was played (i.e. the game was playing).
-	 * Therefore, it only needs to check if playing at index i has concluded the
-	 * game, and if set the oucome correctly
-	 * 
-	 * @param i the index of the cell in the array board that has just been set
-	 */
-	private void setGameState(int i) {
-		if (setGameStateHelper(i)) {
-			// checks which player made the winning move
-			if (board[i] == CellValue.X) {
-				gameState = GameState.XWIN;
-				return;
-			}
-			gameState = GameState.OWIN;
+
+   /**
+	* A helper method which updates the gameState variable
+	* correctly after the cell at index i was just set.
+	* The method assumes that prior to setting the cell
+	* at index i, the gameState variable was correctly set.
+	* it also assumes that it is only called if the game was
+	* not already finished when the cell at index i was played
+	* (the the game was playing). Therefore, it only needs to 
+	* check if playing at index i has concluded the game
+	* 
+   	* @param i
+    *  the index of the cell in the array board that has just 
+    * been set
+  	*/
+
+
+	private void setGameState(int index){
+
+		int left = Math.min(sizeWin-1,index%columns);
+		int right= Math.min(sizeWin-1,columns - (index%columns +1));
+		if( (countConsecutive(index-1, left,-1,board[index]) +
+		   	 countConsecutive(index+1, right,1,board[index]))
+			>= sizeWin-1 ) {			
+			setGameState(board[index]);
 			return;
 		}
-		// if the board is full and the game has not been won then its a draw
-		if (level == board.length) {
+
+
+
+		int up 	= Math.min(sizeWin-1,index/columns);
+		int down= Math.min(sizeWin-1, lines - (index/columns +1));
+		if( (countConsecutive(index-columns, up,-columns,board[index]) +
+		   	 countConsecutive(index+columns, down,columns,board[index]))
+			>= sizeWin-1 ) {			
+			setGameState(board[index]);
+			return;
+		}
+
+		int upLeft = Math.min(up, left); 
+		int downRight= Math.min(down, right); 
+		if( (countConsecutive(index-(columns+1), upLeft,-(columns+1),board[index]) +
+		   	 countConsecutive(index+(columns+1), downRight,columns+1,board[index]))
+			>= sizeWin-1 ) {			
+			setGameState(board[index]);
+			return;
+		}
+
+		int upRight= Math.min(up, right); 
+		int downLeft = Math.min(down, left); 
+		if( (countConsecutive(index-(columns-1), upRight,-(columns-1),board[index]) +
+		   	 countConsecutive(index+(columns-1), downLeft,columns-1,board[index]))
+			>= sizeWin-1 ) {			
+			setGameState(board[index]);
+			return;
+		}
+
+
+		if (level == lines*columns) {
 			gameState = GameState.DRAW;
+		} else {
+			gameState = GameState.PLAYING;			
+		}
+
+	}
+
+
+	private int countConsecutive(int startingPosition, int numberOfSteps, 
+		int stepGap, CellValue value){
+
+		int result= 0;
+		for(int i = 0; i < numberOfSteps;i++){
+			if(board[startingPosition + i*stepGap] != value)
+				break;
+			result++;
+		}
+		return result;
+
+	}
+
+
+	private void setGameState(CellValue value){
+		switch(value){
+			case X:
+				gameState = GameState.XWIN;
+				break;
+			case O:
+				gameState = GameState.OWIN;
+				break;
+			default:
+				throw new IllegalArgumentException("cannot set Game State to value " + value);
 		}
 	}
 
-	/**
-	 * A helper method that determines if the game state
-	 * 
-	 * @param i, the index of the cell in the array board that has just been set
-	 * @return whether or not the play won the game
-	 */
 
-	private boolean setGameStateHelper(int i) {
-		return winChecker(i,i,-1,-columns+1);
-	}
+   /**
+	* Returns a String representation of the game matching
+	* the example provided in the assignment's description
+	* 
+   	* @return
+    *  String representation of the game
+  	*/
 
-	/**
-	 * A helper method that counts the amount of matches in a row
-	 * 
-	 * @param x,         the index of the cell that has to be checked
-	 * @param increment, used to increment the index value to determine the next
-	 *                   cell
-	 * @return the amount of matches in a row
-	 */
-	private boolean winChecker(int x, int i, int counter, int increment) {
-		/* The values of the recusion increment with different values checking for tictactoe wins
-		 * columns checks vertically like |
-		 * columns+1 checks diagonally like \
-		 * columns-1 is a special case, checks diagonally like \
-		 * 1 is a special case, checks horizontally
-		 * Special Case:
-		 * the issue is when it reaches an end it will check the 
-		 * next line if possible instead of overflowing like the 
-		 * others so a if statement for this is implemented in the recusion
-		 */
+	public String toString(){
+		String res = "";
+		for(int i = 0; i < lines ; i++){
+			if(i>0) {
+				for(int j = 0; j < 4*columns - 1; j++){
+					res+="-";
+				}
+				res+= Utils.NEW_LINE;
+			}
+			for(int j = 0; j < columns ; j++){
+				switch(board[i*columns + j]){
+					case X:
+						res+= " X ";
+						break;
+					case O:
+						res+= " O ";
+						break;
+					default:
+						res+=  "   ";
+				}
+				if(j<columns - 1){
+					res += "|";
+				} else{
+					res += Utils.NEW_LINE;
+				}
+			}
+		}
+		return res ;
 		
-		// checks if the index is out of bounds or the streak is broken
-		if (x < 0 || x >= board.length || board[x] != board[i]) {
-			//used to find the first index
-			if (increment > 0) {
-				//checks win condition
-				if (counter >= sizeWin) {
-					return true;
-				}
-				//for horizontal checking
-				if (increment == columns+1) {
-					return winChecker(i, i, -1, -1);
-				}
-				//end case its horizontal checking and its not a win so end 
-				if (increment == 1) {
-					return false;
-				}
-				//moves onto the next increment value
-				return winChecker(i, i, -1, -increment-1);
-			}
-			//checks from the first index with a positive increment
-			return winChecker(i, i, counter, -increment);
-		}
-		//special case
-		if (((increment == columns - 1||-increment == 1) && x % columns == 0) || ((x + 1) % columns == 0 && (-increment == columns - 1|| increment == 1))) {
-			return winChecker(-1, i, ++counter, increment);
-		}
-		//normal recursive stuff
-		return winChecker(x + increment, i, ++counter, increment);
 	}
-	
-	/**
-	 * Returns a String representation of the game matching the example provided in
-	 * the assignment's description
-	 * 
-	 * @return String representation of the game
-	 */
-	public String toString() {
-		// initializes the return string that holds the board as its constructed
-		String boardString = "";
-		// for loop that iterates through every line of the game since every other line
-		// is a separator line, made only of -'s, it needs to run lines*2-1 times
-		for (int x = 0; x < lines * 2 - 1; x++) {
-			boardString += "\n";
-			// if its an odd line then it is a separator line
-			if (x % 2 == 1) {
-				// the amount of - in the examples given is 4*columns-1
-				for (int y = 0; y < 4 * columns - 1; y++) {
-					boardString += "-";
-				}
-				// non separator lines
-			} else {
-				/*
-				 * Since the for loop goes by columns a variable currentLine is initialized
-				 * as well for later use x/2*columns is used to determine the array index of the
-				 * current line, since the array is really just a 1d array representing a 2d
-				 * array x/2 determines the line and *columns finds the index the line starts at
-				 * since each line is columns long
-				 */
-				int currentLine = x / 2 * columns;
-				for (int y = 0; y < columns; y++) {
-					/*
-					 * This section determines which symbol to print, the default print is " " for
-					 * empty cells if there is something in the cell it replaces the " ", to do this
-					 * the index of the array needs to be found using the index of the current line
-					 * the +y increments it to the columns in that line
-					 */
-					String cell = " ";
-					if (board[currentLine + y] == CellValue.X) {
-						cell = "X";
-					}
-					if (board[currentLine + y] == CellValue.O) {
-						cell = "O";
-					}
-					// this constructs the columns using the template "(space)(symbol)(space)"the
-					// first line is special since it does not have a separator
-					if (y == 0) {
-						boardString += " " + cell + " ";
-					}
-					// every other line has a | separating it
-					else {
-						boardString += "| " + cell + " ";
-					}
-				}
-			}
-		}
-		return boardString;
-	}
+
 }
