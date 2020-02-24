@@ -2,7 +2,7 @@
  * The class <b>TicTacToeGame</b> is the
  * class that implements the Tic Tac Toe Game.
  * It contains the grid and tracks its progress.
- * It automatically maintain the current state of
+ * It automatically maintains the current state of
  * the game as players are making moves.
  *
  * @author Anthony Zhao and Cadence Yeung
@@ -125,7 +125,7 @@ public class TicTacToeGame {
     *  the TicTacToeGame instance to be compared with this one
   	*/
 	public boolean equals(TicTacToeGame other) {
-		//checks the variables to see if they are the sa,e
+		//checks the variables to see if they are the same
 		if (other != null && other.getLevel() == level && other.lines == lines && columns == other.columns && other.sizeWin == sizeWin && other.getGameState() == gameState) {
 			//checks to see if the boards are the same
 			for (int x = 0; x < lines*columns; x++) {

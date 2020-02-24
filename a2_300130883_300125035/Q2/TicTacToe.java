@@ -1,31 +1,16 @@
-/**
- * The class <b>TicTacToe</b> is the class that implements the actual Tic Tac Toe game, where it 
- * controls the human and computer activity and prints the result of the game at the end. It also
- * asks the player if he/she wants to continue playing once this game is over.
- * 
- * @author Anthony Zhao and Cadence Yeung
- */
+import java.util.LinkedList;
 
 public class TicTacToe{
+	
 
-   /**
-     * <b>main</b> of the application. Creates the instance of  GameController 
-     * and starts the game. If two parameters line  and column
-     * are passed, they are used. 
-     * Otherwise, a default value is used. Defaults values are also
-     * used if the paramters are too small (less than 2).
-     * 
-     * @param args
-     *            command line parameters
-     */
-     public static void main(String[] args) {
+	public static void main(String[] args){
 
         StudentInfo.display();
-        TicTacToeGame game;
+
         int lines = 3;
         int columns = 3;
         int win = 3;
-	
+
    
         try{
             if (args.length >= 2) {
@@ -56,27 +41,38 @@ public class TicTacToe{
             lines   = 3;
             columns  = 3;
             win = 3;
-        }
-        
-        Player[] players = {new HumanPlayer(), new ComputerRandomPlayer()};
-        int first = 0+Utils.generator.nextInt(2); // randomly decide which player gets to go first (human or computer)
-		do {
-            game = new TicTacToeGame(lines, columns, win);
-            // for loop that prints who's turn it is, the board, and who is to play, until the game ends
-			for (int counter = first; game.getGameState() == GameState.PLAYING; counter++) { 
-				if (counter%2 == 0) { // if counter is even, it is player 1's turn
-					System.out.println("Player 1's Turn" + Utils.NEW_LINE + game + Utils.NEW_LINE + game.nextCellValue() + " to play: ");
-					players[0].play(game); // calls play from HumanPlayer
-				
-                } else { // else, counter is odd and it is player 2's turn
-					System.out.println("Player 2's Turn");
-					players[1].play(game); // calls play from ComputerRandomPlayer
+        }		
+
+        LinkedList<LinkedList<TicTacToeGame>> allGames;
+		allGames = ListOfGamesGenerator.generateAllGames(lines,columns,win);
+		int total = 0;
+		int level = 0;
+		int wonByX = 0;
+		int wonByO = 0;
+		int isADraw = 0;
+		for(LinkedList<TicTacToeGame> list: allGames){
+			System.out.print("======= level " + level + " =======: " + list.size() + " element(s)");
+			total += list.size();
+			level++;
+			int unfinishedGames = 0;
+			for(TicTacToeGame game: list){
+				if(game.getGameState() == GameState.XWIN) {
+					wonByX++;
+				} else if (game.getGameState() == GameState.OWIN) {
+					wonByO++;
+				} else if (game.getGameState() == GameState.DRAW) {
+					isADraw++;
+				} else {
+					unfinishedGames++;
 				}
 			}
-            first++;
-            // prints result of game and ask if you want to play again
-			System.out.print(game + Utils.NEW_LINE + "Result: " + game.getGameState() + Utils.NEW_LINE + "Play again (Y)?:");
-		} while (Utils.console.readLine().compareToIgnoreCase("y") == 0);
-    }
+			System.out.println (" (" + unfinishedGames + " still playing)");
+		}
+		System.out.println("that's " + total + " games");
+		System.out.println(wonByX + "  won by X");
+		System.out.println(wonByO + "  won by O");
+		System.out.println(isADraw + " draw");
 
+
+	}
 }
