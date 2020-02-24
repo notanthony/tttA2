@@ -1,4 +1,10 @@
-
+/**
+ * The class <b>TicTacToe</b> is the class that implements the actual Tic Tac Toe game, where it 
+ * controls the human and computer activity and prints the result of the game at the end. It also
+ * asks the player if he/she wants to continue playing once this game is over.
+ * 
+ * @author Anthony Zhao and Cadence Yeung
+ */
 
 public class TicTacToe{
 
@@ -19,8 +25,7 @@ public class TicTacToe{
         int lines = 3;
         int columns = 3;
         int win = 3;
-		
-
+	
    
         try{
             if (args.length >= 2) {
@@ -52,21 +57,25 @@ public class TicTacToe{
             columns  = 3;
             win = 3;
         }
-        Player[] players = {new HumanPlayer(), new ComputerRandomPlayer};
-        int first = 0+Utils.generator.nextInt(2);
+        
+        Player[] players = {new HumanPlayer(), new ComputerRandomPlayer()};
+        int first = 0+Utils.generator.nextInt(2); // randomly decide which player gets to go first (human or computer)
 		do {
-			for (int counter = first; game.getGameState() == GameState.PLAYING; counter++) {
-				if (counter%2 == 0) {
-					System.out.println("Player 1's Turn" + Utils.NEW_LINE + game + Utils.NEW_LINE + game.getNextCellValue + " to play: ");
-					players[0].play(game);
+            game = new TicTacToeGame(lines, columns, win);
+            // for loop that prints who's turn it is, the board, and who is to play, until the game ends
+			for (int counter = first; game.getGameState() == GameState.PLAYING; counter++) { 
+				if (counter%2 == 0) { // if counter is even, it is player 1's turn
+					System.out.println("Player 1's Turn" + Utils.NEW_LINE + game + Utils.NEW_LINE + game.nextCellValue() + " to play: ");
+					players[0].play(game); // calls play from HumanPlayer
 				
-				} else {
+                } else { // else, counter is odd and it is player 2's turn
 					System.out.println("Player 2's Turn");
-					players[1].play(game);
+					players[1].play(game); // calls play from ComputerRandomPlayer
 				}
 			}
-			first++;
-			System.out.println("Result: " + game.getGameState() + Utils.NEW_LINE + "Play again (Y)?:");
+            first++;
+            // prints result of game and ask if you want to play again
+			System.out.print(game + Utils.NEW_LINE + "Result: " + game.getGameState() + Utils.NEW_LINE + "Play again (Y)?:");
 		} while (Utils.console.readLine().compareToIgnoreCase("y") == 0);
     }
 

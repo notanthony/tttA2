@@ -1,3 +1,10 @@
+/**
+ * The class <b>Utils</b> is the class that provides all the necessary tools that can make our code 
+ * more efficient and clean.
+ *
+ * @author Anthony Zhao and Cadence Yeung
+ */
+
 import java.util.Random;
 import java.io.Console;
 
