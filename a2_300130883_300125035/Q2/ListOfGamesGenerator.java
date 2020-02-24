@@ -1,6 +1,7 @@
 /**
- * Generates all the games
- *
+ * The class <b>ListOfGamesGenerator</b> is the class that generates all the different games for the 
+ * specified parameters.
+ * 
  * @author Anthony Zhao and Cadence Yeung
  */
 
