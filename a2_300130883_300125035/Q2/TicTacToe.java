@@ -1,3 +1,11 @@
+/**
+ * The class <b>TicTacToe</b> is the
+ * class that calls the generation of the list
+ * and prints out some information about it.
+ *
+ * @author Anthony Zhao and Cadence Yeung
+ */
+
 import java.util.LinkedList;
 
 public class TicTacToe{
